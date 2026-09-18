@@ -45,7 +45,7 @@ function createRealtimeTokenHandler({
     // resolveVoiceModel is total: an unknown, empty, or hostile value
     // resolves to `standard` instead of reaching OpenAI as a model id, so a
     // bad querystring degrades to a normal session rather than a dead mic.
-    // The env overrides stay authoritative per tier (see .env.example) —
+    // The env overrides stay authoritative per tier (see .env.example) â
     // a wrong upstream model id is then a config fix, not a code change.
     const requestedTier = (() => {
       try {
@@ -105,7 +105,9 @@ function createRealtimeTokenHandler({
             noise_reduction: { type: 'near_field' },
             turn_detection: {
               type: 'semantic_vad',
-              eagerness: 'low',
+              // End spoken turns promptly. `low` deliberately waits through
+              // longer pauses and made short map commands feel unresponsive.
+              eagerness: 'high',
               create_response: true,
               interrupt_response: false,
             },
@@ -138,7 +140,7 @@ function createRealtimeTokenHandler({
       );
       // Which tier/model this secret was actually minted for. The upstream
       // body is passed through untouched (the client parses it verbatim), so
-      // these headers are the authoritative echo — including the case where a
+      // these headers are the authoritative echo â including the case where a
       // bogus ?tier= was silently downgraded to standard.
       res.setHeader('X-GEV-Voice-Tier', tier);
       res.setHeader('X-GEV-Voice-Model', model);
