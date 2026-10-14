@@ -291,7 +291,9 @@ function createRealtimeTokenHandler({
             ...transcription,
             turn_detection: {
               type: 'semantic_vad',
-              eagerness: 'low',
+              // End spoken turns promptly. `low` deliberately waits through
+              // longer pauses and made short map commands feel unresponsive.
+              eagerness: 'high',
               create_response: true,
               interrupt_response: false,
             },
